@@ -1,12 +1,32 @@
 <template>
   <div class="container-fluid">
-    <div id="app" class="row">
-      <div class="col-md-6">
-        <event-builder />
+    <div id="app">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="socketServer">Websocket Server</label>
+
+            <div class="input-group">
+              <input v-model="serverUrl" type="text" class="form-control" id="socketServer" aria-describedby="socketServerHelp" placeholder="Enter server url">
+
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" v-on:click="connect">Connect</button>
+              </div>
+            </div>
+
+            <small id="socketServerHelp" class="form-text text-muted">Where 2 connect.</small>
+          </div>
+        </div>
       </div>
 
-      <div class="col-md-6">
-        <event-log />
+      <div class="row">
+        <div class="col-md-6">
+          <event-builder />
+        </div>
+
+        <div class="col-md-6">
+          <event-log />
+        </div>
       </div>
     </div>
   </div>
@@ -17,12 +37,27 @@ import EventBuilder from './components/EventBuilder';
 import EventLog from './components/EventLog';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import Vue from 'vue';
+import VueSocketIO from 'vue-socket.io';
 
 export default {
   name: 'App',
   components: {
     EventLog,
     EventBuilder,
+  },
+  data: () => {
+    return {
+      serverUrl: ''
+    };
+  },
+  methods: {
+    connect: function() {
+      Vue.use(new VueSocketIO({
+        debug: true,
+        connection: this.serverUrl,
+      }));
+    }
   }
 }
 </script>
