@@ -40,7 +40,13 @@
                             <th scope="row">{{ index + 1 }}</th>
                             <td>{{ item.name }}</td>
                             <td>{{ item.time }}</td>
-                            <td>ToDo</td>
+                            <td>
+                                <button class="btn btn-info" v-b-modal="'outbound-' + index">Show</button>
+
+                                <b-modal :id="'outbound-' + index">
+                                    {{ JSON.stringify(item.payload) }}
+                                </b-modal>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
