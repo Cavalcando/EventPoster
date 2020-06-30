@@ -21,11 +21,11 @@
 
       <div class="row" v-if="connected">
         <div class="col-md-6">
-          <event-builder @sendEvent="sendEvent" />
+          <event-builder @sendEvent="sendEvent" ref="builder" />
         </div>
 
         <div class="col-md-6">
-          <event-log @sendEvent="sendEvent" ref="log" />
+          <event-log @loadEvent="loadEvent" @sendEvent="sendEvent" ref="log" />
         </div>
       </div>
     </div>
@@ -65,6 +65,9 @@ export default {
       this.$socket.emit(data.name, data.payload);
 
       this.$refs.log.addRow(data);
+    },
+    loadEvent: function(data) {
+      this.$refs.builder.load(data);
     }
   }
 }

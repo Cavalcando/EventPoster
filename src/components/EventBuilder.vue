@@ -51,6 +51,10 @@ export default {
         payload: payload,
         time: new Date()
       });
+    },
+    load: function(item) {
+      this.payload = JSON.stringify(item.payload);
+      this.name = item.name;
     }
   }
 }

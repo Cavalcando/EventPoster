@@ -18,10 +18,9 @@
                             <td>{{ item.name }}</td>
                             <td>{{ item.time | moment("from", "now") }}</td>
                             <td>
-                                <button class="btn btn-info" v-b-modal="'outbound-' + index">Payload</button>
-                                <button class="btn btn-primary ml-2">Replay</button>
+                                <button class="btn btn-info" v-b-modal="'inbound-' + index">Payload</button>
 
-                                <b-modal :id="'outbound-' + index" :title="'Payload of ' + item.name" ok-only>
+                                <b-modal :id="'inbound-' + index" :title="'Payload of ' + item.name" ok-only>
                                     <pre><code>{{ JSON.stringify(item.payload) }}</code></pre>
                                 </b-modal>
                             </td>
@@ -49,7 +48,8 @@
                             <td>{{ item.time | moment("HH:mm:ss") }}</td>
                             <td>
                                 <button class="btn btn-info" v-b-modal="'outbound-' + index">Payload</button>
-                                <button class="btn btn-primary ml-2" v-on:click="replay(item)">Replay</button>
+                                <button class="btn btn-warning ml-2" v-on:click="replay(item)">Replay</button>
+                                <button class="btn btn-primary ml-2" v-on:click="load(item)">Load</button>
 
                                 <b-modal :id="'outbound-' + index" :title="'Payload of ' + item.name" ok-only>
                                     <pre><code>{{ JSON.stringify(item.payload) }}</code></pre>
@@ -86,6 +86,9 @@
                 copy.time = new Date();
 
                 this.$emit('sendEvent', copy);
+            },
+            load: function(item) {
+                this.$emit('loadEvent', item);
             }
         }
     };
