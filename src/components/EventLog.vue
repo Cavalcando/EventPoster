@@ -1,0 +1,34 @@
+<template>
+    <div class="row flex-grow-1 overflow-auto">
+        <div class="col-md-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Event</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Payload</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>foo:bar</td>
+                    <td>blaaa</td>
+                    <td>ToDo</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: 'EventLog',
+    };
+</script>
+
+<style scoped>
+</style>
