@@ -21,6 +21,10 @@
                             <td>{{ item.time }}</td>
                             <td>ToDo</td>
                         </tr>
+
+                        <tr v-if="inbound.length === 0">
+                            <td colspan="4" class="text-center">No entries</td>
+                        </tr>
                         </tbody>
                     </table>
                 </b-tab>
@@ -39,14 +43,18 @@
                         <tr v-for="(item, index) in outbound" v-bind:key="index">
                             <th scope="row">{{ index + 1 }}</th>
                             <td>{{ item.name }}</td>
-                            <td>{{ item.time }}</td>
+                            <td>{{ item.time | moment("from", "now") }}</td>
                             <td>
                                 <button class="btn btn-info" v-b-modal="'outbound-' + index">Show</button>
 
-                                <b-modal :id="'outbound-' + index">
-                                    {{ JSON.stringify(item.payload) }}
+                                <b-modal :id="'outbound-' + index" :title="'Payload of ' + item.name" ok-only>
+                                    <pre><code>{{ JSON.stringify(item.payload) }}</code></pre>
                                 </b-modal>
                             </td>
+                        </tr>
+
+                        <tr v-if="outbound.length === 0">
+                            <td colspan="4" class="text-center">No entries</td>
                         </tr>
                         </tbody>
                     </table>

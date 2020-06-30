@@ -38,7 +38,7 @@ export default {
   name: 'EventBuilder',
   data: () => {
     return {
-      payload: '',
+      payload: '{}',
       name: ''
     };
   },

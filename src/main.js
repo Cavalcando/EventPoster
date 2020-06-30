@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-import VueHighlightJS from 'vue-highlightjs'
+import Moment from 'vue-moment';
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
-Vue.use(VueHighlightJS);
+Vue.use(Moment);
 
 new Vue({
   render: h => h(App),
