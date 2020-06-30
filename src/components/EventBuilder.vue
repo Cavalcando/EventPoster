@@ -1,13 +1,15 @@
 <template>
   <div class="flex-grow-1 mt-2">
+    <h2 class="mb-4 mt-4">Event Builder</h2>
+
     <div class="form-group">
       <label for="eventName">Event Name</label>
 
       <div class="input-group">
-        <input type="text" class="form-control" id="eventName" aria-describedby="eventNameHelp" placeholder="Enter event name">
+        <input v-model="name" type="text" class="form-control" id="eventName" aria-describedby="eventNameHelp" placeholder="Enter event name">
 
         <div class="input-group-append">
-          <button class="btn btn-primary" type="button">Send Event</button>
+          <button class="btn btn-primary" type="button" v-on:click="send">Send Event</button>
         </div>
       </div>
 
@@ -18,7 +20,7 @@
       <b-tab title="Payload" active>
         <div class="form-group">
           <label for="eventPayload">Event Payload</label>
-          <textarea class="form-control" id="eventPayload" rows="10" aria-describedby="eventPayloadHelp"></textarea>
+          <textarea v-model="payload" class="form-control" id="eventPayload" rows="10" aria-describedby="eventPayloadHelp"></textarea>
 
           <small id="eventPayloadHelp" class="form-text text-muted">Define event payload here.</small>
         </div>
@@ -33,7 +35,18 @@
 
 <script>
 export default {
-  name: 'EventBuilder'
+  name: 'EventBuilder',
+  data: () => {
+    return {
+      payload: '',
+      name: ''
+    };
+  },
+  methods: {
+    send: function () {
+      this.$socket.emit(this.name, JSON.parse(this.payload));
+    }
+  }
 }
 </script>
 

@@ -1,5 +1,7 @@
 <template>
     <div class="row flex-grow-1 overflow-auto">
+        <h2 class="mb-4 mt-4">Event Log</h2>
+
         <div class="col-md-12">
             <table class="table table-hover">
                 <thead>
@@ -17,7 +19,6 @@
                     <td>blaaa</td>
                     <td>ToDo</td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
