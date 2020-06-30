@@ -44,7 +44,15 @@ export default {
   },
   methods: {
     send: function () {
-      this.$socket.emit(this.name, JSON.parse(this.payload));
+      const payload = JSON.parse(this.payload);
+
+      this.$emit('sendEvent', {
+        name: this.name,
+        payload: payload,
+        time: new Date()
+      });
+
+      this.$socket.emit(this.name, payload);
     }
   }
 }

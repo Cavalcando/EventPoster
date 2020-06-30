@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div id="app">
-      <div class="row">
+      <div class="row" v-if="!connected">
         <div class="col-md-12">
           <div class="form-group">
             <label for="socketServer">Websocket Server</label>
@@ -19,13 +19,13 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" v-if="connected">
         <div class="col-md-6">
-          <event-builder />
+          <event-builder @sendEvent="sendEvent" />
         </div>
 
         <div class="col-md-6">
-          <event-log />
+          <event-log ref="log" />
         </div>
       </div>
     </div>
@@ -48,15 +48,21 @@ export default {
   },
   data: () => {
     return {
-      serverUrl: ''
+      serverUrl: '',
+      connected: false
     };
   },
   methods: {
     connect: function() {
+      this.connected = true;
+
       Vue.use(new VueSocketIO({
         debug: true,
         connection: this.serverUrl,
       }));
+    },
+    sendEvent: function(data) {
+      this.$refs.log.addRow(data);
     }
   }
 }

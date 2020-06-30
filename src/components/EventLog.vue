@@ -15,10 +15,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>foo:bar</td>
-                            <td>blaaa</td>
+                        <tr v-for="(item, index) in inbound" v-bind:key="index">
+                            <th scope="row">{{ index + 1 }}</th>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.time }}</td>
                             <td>ToDo</td>
                         </tr>
                         </tbody>
@@ -36,10 +36,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>foo:bar</td>
-                            <td>blaaa</td>
+                        <tr v-for="(item, index) in outbound" v-bind:key="index">
+                            <th scope="row">{{ index + 1 }}</th>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.time }}</td>
                             <td>ToDo</td>
                         </tr>
                         </tbody>
@@ -53,6 +53,17 @@
 <script>
     export default {
         name: 'EventLog',
+        data: () => {
+            return {
+                inbound: [],
+                outbound: []
+            }
+        },
+        methods: {
+            addRow: function(data) {
+                this.outbound.push(data);
+            }
+        }
     };
 </script>
 
