@@ -8,18 +8,23 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">#</th>
                             <th scope="col">Event</th>
                             <th scope="col">Time</th>
-                            <th scope="col">Payload</th>
+                            <th scope="col">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(item, index) in inbound" v-bind:key="index">
-                            <th scope="row">{{ index + 1 }}</th>
+                        <tr v-for="(item, index) in inbound.slice().reverse()" v-bind:key="index">
                             <td>{{ item.name }}</td>
-                            <td>{{ item.time }}</td>
-                            <td>ToDo</td>
+                            <td>{{ item.time | moment("from", "now") }}</td>
+                            <td>
+                                <button class="btn btn-info" v-b-modal="'outbound-' + index">Payload</button>
+                                <button class="btn btn-primary ml-2">Replay</button>
+
+                                <b-modal :id="'outbound-' + index" :title="'Payload of ' + item.name" ok-only>
+                                    <pre><code>{{ JSON.stringify(item.payload) }}</code></pre>
+                                </b-modal>
+                            </td>
                         </tr>
 
                         <tr v-if="inbound.length === 0">
@@ -33,19 +38,18 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th scope="col">#</th>
                             <th scope="col">Event</th>
                             <th scope="col">Time</th>
-                            <th scope="col">Payload</th>
+                            <th scope="col">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(item, index) in outbound" v-bind:key="index">
-                            <th scope="row">{{ index + 1 }}</th>
+                        <tr v-for="(item, index) in outbound.slice().reverse()" v-bind:key="index">
                             <td>{{ item.name }}</td>
-                            <td>{{ item.time | moment("from", "now") }}</td>
+                            <td>{{ item.time | moment("HH:mm:ss") }}</td>
                             <td>
-                                <button class="btn btn-info" v-b-modal="'outbound-' + index">Show</button>
+                                <button class="btn btn-info" v-b-modal="'outbound-' + index">Payload</button>
+                                <button class="btn btn-primary ml-2" v-on:click="replay(item)">Replay</button>
 
                                 <b-modal :id="'outbound-' + index" :title="'Payload of ' + item.name" ok-only>
                                     <pre><code>{{ JSON.stringify(item.payload) }}</code></pre>
@@ -76,6 +80,12 @@
         methods: {
             addRow: function(data) {
                 this.outbound.push(data);
+            },
+            replay: function(item) {
+                let copy = JSON.parse(JSON.stringify(item));
+                copy.time = new Date();
+
+                this.$emit('sendEvent', copy);
             }
         }
     };

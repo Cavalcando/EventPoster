@@ -51,8 +51,6 @@ export default {
         payload: payload,
         time: new Date()
       });
-
-      this.$socket.emit(this.name, payload);
     }
   }
 }

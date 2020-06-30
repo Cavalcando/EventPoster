@@ -25,7 +25,7 @@
         </div>
 
         <div class="col-md-6">
-          <event-log ref="log" />
+          <event-log @sendEvent="sendEvent" ref="log" />
         </div>
       </div>
     </div>
@@ -62,6 +62,8 @@ export default {
       }));
     },
     sendEvent: function(data) {
+      this.$socket.emit(data.name, data.payload);
+
       this.$refs.log.addRow(data);
     }
   }
