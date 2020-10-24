@@ -1,35 +1,17 @@
 <template>
-  <div class="container-fluid">
-    <div id="app">
-      <div class="row" v-if="!connected">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label for="socketServer">Websocket Server</label>
+    <div class="container-fluid">
+        <div id="app">
+            <div class="row">
+                <div class="col-md-6">
+                    <event-builder @sendEvent="sendEvent" ref="builder"/>
+                </div>
 
-            <div class="input-group">
-              <input v-model="serverUrl" type="text" class="form-control" id="socketServer" aria-describedby="socketServerHelp" placeholder="Enter server url">
-
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button" v-on:click="connect">Connect</button>
-              </div>
+                <div class="col-md-6">
+                    <event-log @loadEvent="loadEvent" @sendEvent="sendEvent" ref="log"/>
+                </div>
             </div>
-
-            <small id="socketServerHelp" class="form-text text-muted">Where 2 connect.</small>
-          </div>
         </div>
-      </div>
-
-      <div class="row" v-if="connected">
-        <div class="col-md-6">
-          <event-builder @sendEvent="sendEvent" ref="builder" />
-        </div>
-
-        <div class="col-md-6">
-          <event-log @loadEvent="loadEvent" @sendEvent="sendEvent" ref="log" />
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -39,37 +21,82 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Vue from 'vue';
 import VueSocketIO from 'vue-socket.io';
+import Swal from 'sweetalert2';
+import SocketIO from 'socket.io-client';
 
 export default {
-  name: 'App',
-  components: {
-    EventLog,
-    EventBuilder,
-  },
-  data: () => {
-    return {
-      serverUrl: '',
-      connected: false
-    };
-  },
-  methods: {
-    connect: function() {
-      this.connected = true;
-
-      Vue.use(new VueSocketIO({
-        debug: true,
-        connection: this.serverUrl,
-      }));
+    name: 'App',
+    components: {
+        EventLog,
+        EventBuilder,
     },
-    sendEvent: function(data) {
-      this.$socket.emit(data.name, data.payload);
-
-      this.$refs.log.addRow(data);
+    data: () => {
+        return {
+            serverUrl: '',
+            connected: false
+        };
     },
-    loadEvent: function(data) {
-      this.$refs.builder.load(data);
+    methods: {
+        connect: function () {
+            this.connected = true;
+
+
+        },
+        sendEvent: function (data) {
+            this.$socket.emit(data.name, data.payload);
+
+            this.$refs.log.addRow(data);
+        },
+        loadEvent: function (data) {
+            this.$refs.builder.load(data);
+        }
+    },
+    mounted: function () {
+        Swal.fire({
+            title: 'Connect to server',
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off',
+                placeholder: 'localhost:8080'
+            },
+            confirmButtonText: 'Connect',
+            showLoaderOnConfirm: true,
+            preConfirm: (serverUrl) => {
+                return new Promise(resolve => {
+                    let socket = SocketIO(serverUrl);
+
+                    socket.on('connect_error', () => {
+                        Swal.showValidationMessage(`Unable to connect to server`);
+                        Swal.hideLoading();
+                        socket.destroy();
+                    });
+
+                    socket.on('connect', () => {
+                        this.serverUrl = serverUrl;
+
+                        Vue.use(new VueSocketIO({
+                            debug: true,
+                            connection: socket,
+                        }));
+
+                        resolve();
+                    });
+                });
+            },
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.close();
+
+                Swal.fire({
+                    title: `Connected to ${this.serverUrl}`,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                });
+            }
+        })
     }
-  }
 }
 </script>
 
