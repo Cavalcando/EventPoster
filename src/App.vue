@@ -1,35 +1,19 @@
 <template>
-  <div class="container-fluid">
     <div id="app">
-      <div class="row" v-if="!connected">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label for="socketServer">Websocket Server</label>
+        <nav-bar @disconnect="disconnect"></nav-bar>
 
-            <div class="input-group">
-              <input v-model="serverUrl" type="text" class="form-control" id="socketServer" aria-describedby="socketServerHelp" placeholder="Enter server url">
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <event-builder @sendEvent="sendEvent" ref="builder"/>
+                </div>
 
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button" v-on:click="connect">Connect</button>
-              </div>
+                <div class="col-md-6">
+                    <event-log @loadEvent="loadEvent" @sendEvent="sendEvent" ref="log"/>
+                </div>
             </div>
-
-            <small id="socketServerHelp" class="form-text text-muted">Where 2 connect.</small>
-          </div>
         </div>
-      </div>
-
-      <div class="row" v-if="connected">
-        <div class="col-md-6">
-          <event-builder @sendEvent="sendEvent" ref="builder" />
-        </div>
-
-        <div class="col-md-6">
-          <event-log @loadEvent="loadEvent" @sendEvent="sendEvent" ref="log" />
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -37,39 +21,29 @@ import EventBuilder from './components/EventBuilder';
 import EventLog from './components/EventLog';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import Vue from 'vue';
-import VueSocketIO from 'vue-socket.io';
+import NavBar from "@/components/NavBar";
+import connectionHelper from "@/helper/ConnectionHelper";
 
 export default {
-  name: 'App',
-  components: {
-    EventLog,
-    EventBuilder,
-  },
-  data: () => {
-    return {
-      serverUrl: '',
-      connected: false
-    };
-  },
-  methods: {
-    connect: function() {
-      this.connected = true;
-
-      Vue.use(new VueSocketIO({
-        debug: true,
-        connection: this.serverUrl,
-      }));
+    name: 'App',
+    components: {
+        NavBar,
+        EventLog,
+        EventBuilder,
     },
-    sendEvent: function(data) {
-      this.$socket.emit(data.name, data.payload);
+    methods: {
+        sendEvent: function (data) {
+            this.$socket.emit(data.name, data.payload);
 
-      this.$refs.log.addRow(data);
+            this.$refs.log.addRow(data);
+        },
+        loadEvent: function (data) {
+            this.$refs.builder.load(data);
+        },
     },
-    loadEvent: function(data) {
-      this.$refs.builder.load(data);
+    mounted: function () {
+        connectionHelper.showModal();
     }
-  }
 }
 </script>
 
